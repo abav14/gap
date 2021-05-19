@@ -1,4 +1,5 @@
-# gap
+# GAP
+
 Guide to install GAP Stack on CentOs8.x
 
 Let’s say we have a 3 node setup on which we want to deploy GAP Stack for monitoring and alerting.
