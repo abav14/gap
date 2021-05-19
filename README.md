@@ -68,7 +68,7 @@ To check the metrics go to http://<node_ip>:9100/metrics.
 
 <h4>2. Setup Prometheus</h4>
 
-We”ll be installing Prometheus on node2 only. It will be collecting metrics from all the nodes with the help of node exporter running on all those nodes.
+We”ll be installing Prometheus on node2. It will be collecting metrics from all the nodes with the help of node exporter running on all those nodes.
 
 **[on node2]**
 ~~~shell
@@ -113,4 +113,55 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 EOF
+~~~
+Start and enable the service
+~~~shell
+sudo systemctl enable --now prometheus
+~~~
+<h4>3.	Setup AlertManager</h4>
+
+We"ll installing AlertManager on node2. It will be pushing alerts based on rules written in prometheus.
+
+**[on node2]**
+~~~shell
+cd
+mkdir alertmanager
+cd alertmanager
+wget https://github.com/prometheus/alertmanager/releases/download/v0.18.0/alertmanager-0.18.0.linux-amd64.tar.gz
+tar xvzf alertmanager-0.18.0.linux-amd64.tar.gz
+cd alertmanager-0.18.0.linux-amd64/
+sudo mv amtool alertmanager /usr/local/bin
+
+sudo mkdir -p /etc/alertmanager
+sudo mv alertmanager.yml /etc/alertmanager
+sudo mkdir -p /data/alertmanager
+sudo useradd -rs /bin/false alertmanager
+sudo chown alertmanager:alertmanager /usr/local/bin/amtool /usr/local/bin/alertmanager
+sudo chown -R alertmanager:alertmanager /data/alertmanager /etc/alertmanager/*
+~~~
+ AlertManager Service file
+~~~shell
+cat << EOF > /lib/systemd/system/alertmanager.service
+[Unit]
+Description=Alert Manager
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=alertmanager
+Group=alertmanager
+ExecStart=/usr/local/bin/alertmanager \
+  --config.file=/etc/alertmanager/alertmanager.yml \
+  --storage.path=/data/alertmanager
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+~~~
+Start and enable the service
+~~~shell
+sudo systemctl enable --now prometheus
 ~~~
