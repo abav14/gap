@@ -225,6 +225,10 @@ EXITVAL=0
 TEXTFILE_COLLECTOR_DIR=/var/lib/node_exporter/
  cat << EOF > "$TEXTFILE_COLLECTOR_DIR/nova_prov.prom.$$"
 nova_exitval $((EXITVAL))
+
+mv "$TEXTFILE_COLLECTOR_DIR/nova_prov.prom.$$" \
+  "$TEXTFILE_COLLECTOR_DIR/nova_prov.prom"
+ 
 EOF
 ~~~
 Now each file in /var/lib/node-exporter/ that has .prom extension will be pushed to node-exporter.
