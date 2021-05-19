@@ -6,8 +6,8 @@ Let’s call the nodes as- node1, node2, node3.
 
 Operating system- Cent0S 8
 
-<h3>PART 1- Installation and setup</h3>
-1.	Install Node exporter
+<h2>PART 1- Installation and setup</h2>
+<h4>1.	Install Node exporter</h4>
 
 
 **[on all nodes]**
@@ -66,5 +66,51 @@ You’ll be able to see node exporter running on port 9100.
 
 To check the metrics go to http://<node_ip>:9100/metrics.
 
-2.	Setup Prometheus
-We”ll be installing Prometheus on node2 only. It will be collecting metrics from all the nodes with the help of node exporter running there.
+<h4>2. Setup Prometheus</h4>
+
+We”ll be installing Prometheus on node2 only. It will be collecting metrics from all the nodes with the help of node exporter running on all those nodes.
+
+**[on node2]**
+~~~shell
+cd ~
+mkdir prometheus
+cd prometheus
+wget https://github.com/prometheus/prometheus/releases/download/v2.11.2/prometheus-2.11.2.linux-amd64.tar.gz
+tar xvzf prometheus-2.11.2.linux-amd64.tar.gz
+
+sudo useradd -rs /bin/false prometheus
+cd prometheus-2.11.2.linux-amd64/
+sudo cp prometheus promtool /usr/local/bin
+sudo chown prometheus:prometheus /usr/local/bin/prometheus
+sudo mkdir /etc/prometheus
+sudo cp -R consoles/ console_libraries/ prometheus.yml /etc/prometheus
+sudo mkdir -p /data/prometheus
+sudo chown -R prometheus:prometheus /data/prometheus /etc/prometheus/*
+sudo chown -R prometheus:prometheus /data/
+~~~
+Prometheus Service file
+~~~shell
+cat << EOF > /lib/systemd/system/prometheus.service
+[Unit]
+Description=Prometheus
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=prometheus
+Group=prometheus
+ExecStart=/usr/local/bin/prometheus \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --storage.tsdb.path="/data/prometheus" \
+  --web.console.templates=/etc/prometheus/consoles \
+  --web.console.libraries=/etc/prometheus/console_libraries \
+  --web.listen-address=0.0.0.0:9090 \
+  --web.enable-admin-api
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+~~~
