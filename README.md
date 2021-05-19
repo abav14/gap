@@ -219,7 +219,8 @@ The script looks like this.
 
 **[on node1]**
 ~~~shell
-cat << EOF > script.sh
+vi script.sh
+
 EXITVAL=0
 # while installing node-exporter this is the default value of textfile-collector
 TEXTFILE_COLLECTOR_DIR=/var/lib/node_exporter/
@@ -228,8 +229,6 @@ some_exitval $((EXITVAL))
 EOF
 mv "$TEXTFILE_COLLECTOR_DIR/nova_prov.prom.$$" \
   "$TEXTFILE_COLLECTOR_DIR/some_prov.prom"
-
-EOF
 ~~~
 Now each file in /var/lib/node-exporter/ that has .prom extension will be pushed to node-exporter.
 In this case we”ll see a variable in node-exporter metrics named nova_exitval that has value 0. Similarly we can create custom metrics for other scripts.
