@@ -237,6 +237,8 @@ In this case we”ll see a variable in node-exporter metrics named nova_exitval 
 
 Let’s create and understand prometheus.yml file.
 
+**[on node2]**
+
 ~~~shell
 cd /etc/prometheus/
 vi prometheus.yml
@@ -285,6 +287,8 @@ We have created 2 jobs and put different targets in them. Similarly any no. of j
 Also in the alerting section we have added localhost:9093 because AlertManager is running on same node at port 9093.
 
 Let’s create and understand rules.yml file.
+
+**[on node2]**
 
 ~~~shell
 cd /etc/prometheus/
@@ -373,6 +377,8 @@ In the end we have created a rule to check the cpu and memory usage percentages 
 We have also used 2 labels here 'severity' and 'severity' that can be utilized in inhibition in AlertManager. Inhibition is a concept of suppressing notifications for certain alerts if certain other alerts are already firing. 
 
 <h4> Setup AlertManager </h4>
+
+**[on node2]**
 
 ~~~shell
 cd /etc/alertmanager/
