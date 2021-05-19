@@ -213,7 +213,7 @@ Now all the components are installed let's see how we can configure and customiz
 In this part we”ll learn how to create custom node-exporter rules.
 Let’s say we have to run a script in crontab and pushed the output of it to node-exporter on regular intervals and create a rule for that value in Prometheus.
 
-Suppose we have a script script.sh on **node1** that outputs a EXITVAL based on some logic and we want the EXITVAL to be pushed to node-exporter. We”ll run the script in crontab according to our requirement.
+Suppose we have a script script.sh on **node1** that has a variable **some_exitval** based on some logic and we want this variable to be pushed to node-exporter. We”ll run the script in crontab according to our requirement.
 
 The script looks like this.
 
