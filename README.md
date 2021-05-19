@@ -1,11 +1,11 @@
-# GAP
+# GAP Stack 
 
 Guide to install GAP Stack on CentOs8.x
 
 Let’s say we have a 3 node setup on which we want to deploy GAP Stack for monitoring and alerting.
 Let’s call the nodes as- node1, node2, node3.
 
-Operating system- Cent0S 8
+Operating system- CentOS Linux release 8.1.1911
 
 <h2>PART 1- Installation and setup</h2>
 <h4>1.	Install Node exporter</h4>
