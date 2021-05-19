@@ -311,7 +311,7 @@ groups:
       severity: critical
       source: 2
     annotations:
-      summary: group 1 not-active
+      summary: group 2 not-active
     
 - name: Services status
   rules:
@@ -320,7 +320,7 @@ groups:
     for: 60m
     labels:
       severity: error
-      source: 4
+      source: 3
     annotations:
       summary: chrony service not-active on group1
 
@@ -329,7 +329,7 @@ groups:
     for: 60m
     labels:
       severity: error
-      source: 5
+      source: 4
     annotations:
       summary: haproxy service is not active on node3
  
@@ -338,7 +338,7 @@ groups:
     for: 10m
     labels:
       severity: error
-      source: 6
+      source: 5
     annotations:
       summary: nova_exital is not zero
 
@@ -349,7 +349,7 @@ groups:
     for: 5m
     labels:
       severity: warning
-      source: 7
+      source: 6
     annotations:
       summary: host cpu usage is high
       
@@ -364,11 +364,13 @@ groups:
 
 ~~~
 
-In rules.yml we are making use of jobs filter as defined it prometheus.yml. We have first written rule to check if group 1 and group 2 nodes are up. Then we have written a rule to check chrony service on group1. Then we have used combination of instance and job filter to check haproxy service on node3. 
+In rules.yml we are making use of job filter as defined in prometheus.yml. We have first written rule to check if group 1 and group 2 nodes are up. Then we have written a rule to check chrony service on group1. Then we have used combination of instance and job filter to check haproxy service on node3. 
 
 We have also made a rule to check custom parameter i.e. nova_exitval. The script was running on node1 in crontab and value is pushed to node_exporter so we have mentioned node1_ip and 9100 port to get that value. If the value is not zero then a alert will be sent to AlertManager.
 
-In the end we have created a rule to check the cpu and memory usage on all nodes if the value is more than 50 (or 70) then a alert would be sent.
+In the end we have created a rule to check the cpu and memory usage percentages on all nodes if the value is more than 50 (or 70) then a alert would be sent.
+
+We have also used 2 labels here 'severity' and 'severity' that can be utilized in inhibition in AlertManager. Inhibition is a concept of suppressing notifications for certain alerts if certain other alerts are already firing. 
 
 <h4> Setup AlertManager </h4>
 
@@ -407,9 +409,10 @@ inhibit_rules:
     equal: ['source']
 ~~~
 
-This is a sample alertmanager.yml. In this rules inhibition is done. If a 'Critical' alert is fired then 'Error' and 'Warning' will not be fired if they have same source match in rules.yml.
+This is a sample alertmanager.yml. In this rules inhibition is done. If a 'Critical' alert is fired then 'Error' and 'Warning' will not be fired if they have same 'source' label match in rules.yml.
 
 To check alerts go to http://<node2_ip>:9093. This type of alerts can be seen.
+
 
 ![Screenshot (97)](https://user-images.githubusercontent.com/28900470/118823068-509e5d00-b8d6-11eb-9b05-96d94936131b.png)
 
