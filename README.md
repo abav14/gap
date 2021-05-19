@@ -280,7 +280,9 @@ scrape_configs:
     - targets: ['<node2_ip>:9100','<node3_ip>:9100']
 ~~~
 
-We have created 2 jobs and put different targets in them. Similarly any no. of jobs and targets can be added accordingly. This will be used in referring in rules.yml file. Also in the alerting section we have added localhost:9093 because AlertManager is running on same node at port 9093.
+We have created 2 jobs and put different targets in them. Similarly any no. of jobs and targets can be added accordingly. This will be used in referring in rules.yml file. 
+
+Also in the alerting section we have added localhost:9093 because AlertManager is running on same node at port 9093.
 
 Let’s create and understand rules.yml file.
 
