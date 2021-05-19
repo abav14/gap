@@ -411,7 +411,7 @@ inhibit_rules:
 
 This is a sample alertmanager.yml. In this rules inhibition is done. If a 'Critical' alert is fired then 'Error' and 'Warning' will not be fired if they have same 'source' label match in rules.yml.
 
-To check alerts go to http://<node2_ip>:9093. This type of alerts can be seen.
+To check alerts go to http://<node2_ip>:9093. This type of alerts can be seen. If email is configured then following alerts will be pushed to email based on the intervals defined in rules.yml.
 
 
 ![Screenshot (97)](https://user-images.githubusercontent.com/28900470/118823068-509e5d00-b8d6-11eb-9b05-96d94936131b.png)
