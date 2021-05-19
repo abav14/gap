@@ -66,7 +66,7 @@ You’ll be able to see node exporter running on port 9100.
 
 To check the metrics go to http://<node_ip>:9100/metrics.
 
-<h4>2. Setup Prometheus</h4>
+<h4>2. Installing Prometheus</h4>
 
 We”ll be installing Prometheus on node2. It will be collecting metrics from all the nodes with the help of node exporter running on all those nodes.
 
@@ -118,9 +118,9 @@ Start and enable the service
 ~~~shell
 sudo systemctl enable --now prometheus
 ~~~
-<h4>3.	Setup AlertManager</h4>
+<h4>3.	Installing AlertManager</h4>
 
-We"ll installing AlertManager on node2. It will be pushing alerts based on rules written in prometheus.
+We"ll be installing AlertManager on node2. It will be pushing alerts based on rules written in prometheus.
 
 **[on node2]**
 ~~~shell
@@ -165,3 +165,29 @@ Start and enable the service
 ~~~shell
 sudo systemctl enable --now prometheus
 ~~~
+<h4>4.	Setup Grafana </h4>
+We"ll be setting up grafana on node2.
+
+**[on node2]**
+
+~~~shell
+cat << EOF >  /etc/yum.repos.d/grafana.repo
+[grafana]
+name=grafana
+baseurl=https://packages.grafana.com/oss/rpm
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.grafana.com/gpg.key
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+
+yum install grafana
+systemctl daemon-reload
+systemctl enable --now grafana-server
+~~~
+
+Go to browser and access http://<node2_ip>:3000
+username=admin
+password=admin
+
