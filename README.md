@@ -188,6 +188,17 @@ systemctl enable --now grafana-server
 ~~~
 
 Go to browser and access http://<node2_ip>:3000
+
 username=admin
+
 password=admin
+
+To reset grafana password in future use the following command.
+
+~~~shell
+grafana-cli admin reset-admin-password admin
+~~~
+Now on Grafana dasboard navigate to Setting->Data Sources-> Add data source -> Prometheus.
+Add http://localhost:9090 in URL and add the following data source like this. 
+
 
