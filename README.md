@@ -213,7 +213,7 @@ Now all the components are installed let's see how we can configure and customiz
 In this part we”ll learn how to create custom node-exporter rules.
 Let’s say we have to run a script in crontab and pushed the output of it to node-exporter on regular intervals and create a rule for that value in Prometheus.
 
-Suppose we have a script that script.sh that outputs a EXITVAL based on some logic and we want the EXITVAL to be pushed to node-exporter. We”ll run the script in crontab according to our requirement.
+Suppose we have a script script.sh on **node1** that outputs a EXITVAL based on some logic and we want the EXITVAL to be pushed to node-exporter. We”ll run the script in crontab according to our requirement.
 
 The script looks like this.
 ~~~shell
@@ -286,7 +286,7 @@ vi rules.yml
 groups:
 - name: Power-On Status
   rules:
-  - alert: HostDown-Controllers
+  - alert: HostDown-group1
     expr: up{job="group1"}==0
     for: 1m
     labels:
@@ -295,7 +295,7 @@ groups:
     annotations:
       summary: group 1 not-active
 
-  - alert: HostDown-Computes
+  - alert: HostDown-group2
     expr: up{job="group2"}==0
     for: 1m
     labels:
@@ -306,7 +306,7 @@ groups:
     
 - name: Services status
   rules:
-  - alert: ChronyServiceDownController
+  - alert: ChronyServiceDownGroup1
     expr: node_systemd_unit_state{job="group1",name="chronyd.service",state="active"}==0
     for: 60m
     labels:
@@ -315,7 +315,7 @@ groups:
     annotations:
       summary: chrony service not-active on group1
 
-  - alert: ChronyServiceDownCompute
+  - alert: HaproxyServiceDownNode3
     expr: node_systemd_unit_state{instance="<node3_ip>:9100",job="group2",name="haproxy.service",state="active"}==0
     for: 60m
     labels:
@@ -335,4 +335,6 @@ groups:
 
 ~~~
 
-In this we have first
+In this we have first written rule to check if group 1 and group 2 nodes are up. Then we have written a rule to check chrony service on group1. Then we have used combination of instance and job filter to check haproxy service on node3. 
+
+We have also made a rule to check custom parameter i.e. nova_exitval. If the value is not zero then a alert will be sent to AlertManager.
