@@ -258,7 +258,7 @@ rule_files:
 # Here it's Prometheus itself.
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: 'group'
+  - job_name: 'group1'
 
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
@@ -273,7 +273,7 @@ scrape_configs:
     - targets: ['<node2_ip>:9100','<node3_ip>:9100']
 ~~~
 
-We have created 2 jobs and put different targets in them. Similarly any no. of jobs and targets can be added accordingly. This will be used in referring in rules.yml file.
+We have created 2 jobs and put different targets in them. Similarly any no. of jobs and targets can be added accordingly. This will be used in referring in rules.yml file. Also in the alerting section we have added localhost:9093 because AlertManager is running on same node at port 9093.
 
 Let’s create and understand rules.yml file.
 
@@ -333,8 +333,31 @@ groups:
     annotations:
       summary: nova_exital is not zero
 
+- name: Warnings
+  rules:
+  - alert: CPU_Used_Threshold
+    expr: (100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100))>=50
+    for: 5m
+    labels:
+      severity: warning
+      source: 7
+    annotations:
+      summary: host cpu usage is high
+      
+  - alert: RAM_Used_Threshold
+    expr: (100 * (1 - ((avg_over_time(node_memory_MemFree_bytes[1h]) + avg_over_time(node_memory_Cached_bytes[1h]) + avg_over_time(node_memory_Buffers_bytes[1h])) / avg_over_time(node_memory_MemTotal_bytes[1h]))))>=70
+    for: 5m
+    labels:
+      severity: warning
+      source: 14
+    annotations:
+      summary: host memory usage is high
+
 ~~~
 
-In this we have first written rule to check if group 1 and group 2 nodes are up. Then we have written a rule to check chrony service on group1. Then we have used combination of instance and job filter to check haproxy service on node3. 
+In rules.yml we are making use of jobs filter as defined it prometheus.yml. We have first written rule to check if group 1 and group 2 nodes are up. Then we have written a rule to check chrony service on group1. Then we have used combination of instance and job filter to check haproxy service on node3. 
 
-We have also made a rule to check custom parameter i.e. nova_exitval. If the value is not zero then a alert will be sent to AlertManager.
+We have also made a rule to check custom parameter i.e. nova_exitval. The script was running on node1 in crontab and value is pushed to node_exporter so we have mentioned node1_ip and 9100 port to get that value. If the value is not zero then a alert will be sent to AlertManager.
+
+In the end we have created a rule to check the cpu and memory usage on all nodes if the value is more than 50 (or 70) then a alert would be sent.
+
