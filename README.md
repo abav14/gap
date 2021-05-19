@@ -268,4 +268,4 @@ scrape_configs:
     # scheme defaults to 'http'.
     static_configs:
     - targets: ['<node2_ip>:9100','<node3_ip>:9100']
-
+~~~
