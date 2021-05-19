@@ -323,6 +323,16 @@ groups:
       source: 5
     annotations:
       summary: haproxy service is not active on node3
-      
+ 
+  - alert: custom_parameter check
+    expr: nova_exitval{instance="<node1_ip>:9100",job="group1"}!=0
+    for: 10m
+    labels:
+      severity: error
+      source: 6
+    annotations:
+      summary: nova_exital is not zero
+
 ~~~
 
+In this we have first
