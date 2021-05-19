@@ -227,10 +227,14 @@ Now each file in /var/lib/node-exporter/ that has .prom extension will be pushed
 In this case we”ll see a variable in node-exporter metrics named nova_exitval that has value 0. Similarly we can create custom metrics for other scripts.
 
 <h4> Adding targets to Prometheus and creating rules</h4>
+
 Let’s create and understand prometheus.yml file.
+
 ~~~shell
 cd /etc/prometheus/
 vi prometheus.yml
+~~~
+
 ~~~yaml
 
 # my global config
@@ -249,7 +253,6 @@ alerting:
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
   - "rules.yml"
-# - "second_rules.yml"
 
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
@@ -269,3 +272,15 @@ scrape_configs:
     static_configs:
     - targets: ['<node2_ip>:9100','<node3_ip>:9100']
 ~~~
+
+We have created 2 jobs and put different targets in them. Similarly any no. of jobs and targets can be added accordingly. This will be used in referring in rules.yml file.
+
+Let’s create and understand rules.yml file.
+
+~~~shell
+cd /etc/prometheus/
+vi rules.yml
+~~~
+
+~~~yaml
+
