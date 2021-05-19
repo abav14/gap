@@ -205,7 +205,7 @@ Add http://localhost:9090 in URL and add the following data source like this.
 
 Now all the components are installed let's see how we can configure and customize them.
 
-PART 2- Configuring the setup.
+<h2>PART 2- Configuring the setup.</h2>
 
 <h4> Creating custom node-exporter metrics</h4>
 
@@ -221,5 +221,50 @@ EXITVAL=0
 TEXTFILE_COLLECTOR_DIR=/var/lib/node_exporter/
  cat << EOF > "$TEXTFILE_COLLECTOR_DIR/nova_prov.prom.$$"
 nova_exitval $((EXITVAL))
-EOF
 ~~~
+Now each file in /var/lib/node-exporter/ that has .prom extension will be pushed to node-exporter.
+In this case we”ll see a variable in node-exporter metrics named nova_exitval that has value 0. Similarly we can create custom metrics for other scripts.
+
+<h4> Adding targets to Prometheus and creating rules</h4>
+Let’s create and understand prometheus.yml file.
+~~~shell
+cd /etc/prometheus/
+vi prometheus.yml
+~~~yaml
+
+# my global config
+global:
+  scrape_interval:     60s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 60s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - localhost:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - "rules.yml"
+# - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'node1_job'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+    - targets: ['<node1_ip>:9100']
+
+  - job_name: 'node2and3_job'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+    - targets: ['<node2_ip>:9100','<node3_ip>:9100']
+
