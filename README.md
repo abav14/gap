@@ -216,12 +216,16 @@ Let’s say we have to run a script in crontab and pushed the output of it to no
 Suppose we have a script script.sh on **node1** that outputs a EXITVAL based on some logic and we want the EXITVAL to be pushed to node-exporter. We”ll run the script in crontab according to our requirement.
 
 The script looks like this.
+
+**[on node1]**
 ~~~shell
+cat << EOF > script.sh
 EXITVAL=0
 # while installing node-exporter this is the default value of textfile-collector
 TEXTFILE_COLLECTOR_DIR=/var/lib/node_exporter/
  cat << EOF > "$TEXTFILE_COLLECTOR_DIR/nova_prov.prom.$$"
 nova_exitval $((EXITVAL))
+EOF
 ~~~
 Now each file in /var/lib/node-exporter/ that has .prom extension will be pushed to node-exporter.
 In this case we”ll see a variable in node-exporter metrics named nova_exitval that has value 0. Similarly we can create custom metrics for other scripts.
