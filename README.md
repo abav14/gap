@@ -361,3 +361,46 @@ We have also made a rule to check custom parameter i.e. nova_exitval. The script
 
 In the end we have created a rule to check the cpu and memory usage on all nodes if the value is more than 50 (or 70) then a alert would be sent.
 
+<h4> Setup AlertManager </h4>
+
+~~~shell
+cd /etc/alertmanager/
+vi alertmanager.yml
+~~~
+
+~~~yaml
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname','severity']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'email'
+receivers:
+- name: 'email'
+  email_configs:
+  - to: '<email_to_send_alerts_to>'
+    from: '<from_email>'
+    smarthost: <smarthost>:25
+inhibit_rules:
+  - source_match:
+      severity: 'Critical'
+    target_match:
+      severity: 'Error'
+    equal: ['source']   #this should be same label:value in both source and target alert
+
+  - source_match:
+      severity: 'Critical'
+    target_match:
+      severity: 'Warning'
+    equal: ['source']
+~~~
+
+This is a sample alertmanager.yml. In this rules inhibition is done. If a 'Critical' alert is fired then 'Error' and 'Warning' will not be fired if they have same source match in rules.yml.
+
+To check alerts go to http://<node2_ip>:9093. This type of alerts can be seen.
+
+![Screenshot (97)](https://user-images.githubusercontent.com/28900470/118823068-509e5d00-b8d6-11eb-9b05-96d94936131b.png)
+
