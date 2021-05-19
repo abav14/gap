@@ -258,14 +258,14 @@ rule_files:
 # Here it's Prometheus itself.
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: 'node1_job'
+  - job_name: 'group'
 
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
     - targets: ['<node1_ip>:9100']
 
-  - job_name: 'node2and3_job'
+  - job_name: 'group2'
 
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
@@ -283,4 +283,46 @@ vi rules.yml
 ~~~
 
 ~~~yaml
+groups:
+- name: Power-On Status
+  rules:
+  - alert: HostDown-Controllers
+    expr: up{job="group1"}==0
+    for: 1m
+    labels:
+      severity: critical
+      source: 1
+    annotations:
+      summary: group 1 not-active
+
+  - alert: HostDown-Computes
+    expr: up{job="group2"}==0
+    for: 1m
+    labels:
+      severity: critical
+      source: 2
+    annotations:
+      summary: group 1 not-active
+    
+- name: Services status
+  rules:
+  - alert: ChronyServiceDownController
+    expr: node_systemd_unit_state{job="group1",name="chronyd.service",state="active"}==0
+    for: 60m
+    labels:
+      severity: error
+      source: 4
+    annotations:
+      summary: chrony service not-active on group1
+
+  - alert: ChronyServiceDownCompute
+    expr: node_systemd_unit_state{instance="<node3_ip>:9100",job="group2",name="haproxy.service",state="active"}==0
+    for: 60m
+    labels:
+      severity: error
+      source: 5
+    annotations:
+      summary: haproxy service is not active on node3
+      
+~~~
 
