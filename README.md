@@ -201,4 +201,25 @@ grafana-cli admin reset-admin-password admin
 Now on Grafana dasboard navigate to Setting->Data Sources-> Add data source -> Prometheus.
 Add http://localhost:9090 in URL and add the following data source like this. 
 
+![Screenshot (95)](https://user-images.githubusercontent.com/28900470/118795927-baa80980-b8b8-11eb-8471-5b47b13e2a09.png)
 
+Now all the components are installed let's see how we can configure and customize them.
+
+PART 2- Configuring the setup.
+
+<h4> Creating custom node-exporter metrics</h4>
+
+In this part we”ll learn how to create custom node-exporter rules.
+Let’s say we have to run a script in crontab and pushed the output of it to node-exporter on regular intervals and create a rule for that value in Prometheus.
+
+Suppose we have a script that script.sh that outputs a EXITVAL based on some logic and we want the EXITVAL to be pushed to node-exporter. We”ll run the script in crontab according to our requirement.
+
+The script looks like this.
+~~~shell
+EXITVAL=0
+# while installing node-exporter this is the default value of textfile-collector
+TEXTFILE_COLLECTOR_DIR=/var/lib/node_exporter/
+ cat << EOF > "$TEXTFILE_COLLECTOR_DIR/nova_prov.prom.$$"
+nova_exitval $((EXITVAL))
+EOF
+~~~
