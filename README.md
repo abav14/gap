@@ -389,7 +389,7 @@ We have also made a rule to check custom parameter i.e. nova_exitval. The script
 
 In the end we have created a rule to check the cpu and memory usage percentages on all nodes if the value is more than 50 (or 70) then a alert would be sent.
 
-We have also used 2 labels here 'severity' and 'severity' that can be utilized in inhibition in AlertManager. Inhibition is a concept of suppressing notifications for certain alerts if certain other alerts are already firing. 
+We have also used 2 labels here 'severity' and 'source' that can be utilized in rules inhibition in AlertManager. Inhibition is a concept of suppressing notifications for certain alerts if certain other alerts are already firing. 
 
 <h4> Setup AlertManager </h4>
 
@@ -432,7 +432,7 @@ inhibit_rules:
 
 This is a sample alertmanager.yml. In this rules inhibition is done. If a 'Critical' alert is fired then 'Error' and 'Warning' will not be fired if they have same 'source' label match in rules.yml.
 
-To check alerts go to http://<node2_ip>:9093. This type of alerts can be seen. If email is configured then following alerts will be pushed to email based on the intervals defined in rules.yml.
+To check alerts go to http://<node2_ip>:9093. This type of alerts can be seen. If email is configured then following alerts will be pushed to email based on the interval defined in repeat_interval variable.
 
 
 ![Screenshot (97)](https://user-images.githubusercontent.com/28900470/118823068-509e5d00-b8d6-11eb-9b05-96d94936131b.png)
