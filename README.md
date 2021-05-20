@@ -211,7 +211,7 @@ Now all the components are installed let's see how we can configure and customiz
 
 <h4> Creating custom node-exporter metrics</h4>
 
-In this part we”ll learn how to create custom node-exporter rules.
+In this part we”ll learn how to create custom node-exporter metrics.
 Let’s say we have to run a script in crontab and pushed the output of it to node-exporter on regular intervals and create a rule for that value in Prometheus.
 
 Suppose we have a script script.sh on **node1** that has a variable **some_exitval** based on some logic and we want this variable to be pushed to node-exporter. We”ll run the script in crontab according to our requirement.
@@ -231,6 +231,15 @@ EOF
 mv "$TEXTFILE_COLLECTOR_DIR/some_prov.prom.$$" \
   "$TEXTFILE_COLLECTOR_DIR/some_prov.prom"
 ~~~
+
+Format of a .prom file. In this var1 and var2 will be pushed to node exporter with value 2 and 30 respectively.
+
+~~~shell
+#variable1 value1
+var1 2
+var2 30
+~~~
+
 Now each file in /var/lib/node-exporter/ that has .prom extension will be pushed to node-exporter.
 In this case we”ll see a variable in node-exporter metrics named nova_exitval that has value 0. Similarly we can create custom metrics for other scripts.
 
