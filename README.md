@@ -232,16 +232,19 @@ mv "$TEXTFILE_COLLECTOR_DIR/some_prov.prom.$$" \
   "$TEXTFILE_COLLECTOR_DIR/some_prov.prom"
 ~~~
 
+
+Now each file in /var/lib/node-exporter/ that has .prom extension will be pushed to node-exporter.
+In this case we”ll see a variable in node-exporter metrics named nova_exitval that has value 0. 
+
 Format of a .prom file. In this var1 and var2 will be pushed to node exporter with value 2 and 30 respectively.
 
 ~~~shell
-#variable1 value1
+#variable value
 var1 2
 var2 30
 ~~~
 
-Now each file in /var/lib/node-exporter/ that has .prom extension will be pushed to node-exporter.
-In this case we”ll see a variable in node-exporter metrics named nova_exitval that has value 0. Similarly we can create custom metrics for other scripts.
+Similarly we can create custom metrics for other scripts.
 
 <h4> Adding targets to Prometheus and creating rules</h4>
 
@@ -294,9 +297,11 @@ scrape_configs:
 
 We have created 2 jobs and put different targets in them. Similarly any no. of jobs and targets can be added accordingly. This will be used in referring in rules.yml file. 
 
-Also in the alerting section we have added localhost:9093 because AlertManager is running on same node at port 9093.
+Also in the alerting section we have added localhost:9093 because AlertManager is running on same node at port 9093. 
 
-Let’s create and understand rules.yml file.
+We have also mentioned the path of our rules.yml file.
+
+Let’s create and understand rules.yml file. Rules written in rules.yml will be evaluated based on the interval defined in prometheus.yml and alerts would be sent to AlertManager based on that.
 
 **[on node2]**
 
